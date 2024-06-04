@@ -7,6 +7,7 @@ import 'profile_page.dart';
 import 'timezone.dart';
 import 'currency.dart';
 import 'trending.dart';
+import 'info.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -15,7 +16,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late UserController _userController;
-  String? _username; // Change to nullable
+  String? _username;
   final _tweetController = TextEditingController();
   int _selectedIndex = 0;
   final PageController _pageController = PageController();
@@ -27,7 +28,8 @@ class _HomePageState extends State<HomePage> {
     _loadUsername();
   }
 
-  Future<void> _loadUsername() async { // Ensure the method is async and returns a Future
+  Future<void> _loadUsername() async {
+    // Ensure the method is async and returns a Future
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       _username = prefs.getString('username');
@@ -97,40 +99,42 @@ class _HomePageState extends State<HomePage> {
         body: user == null
             ? Center(child: CircularProgressIndicator())
             : Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: TextField(
-                controller: _tweetController,
-                decoration: InputDecoration(labelText: 'What\'s happening?'),
-              ),
-            ),
-            ElevatedButton(
-              onPressed: _addTweet,
-              child: Text('Tweet'),
-            ),
-            Expanded(
-              child: ListView.builder(
-                itemCount: tweets.length,
-                itemBuilder: (context, index) {
-                  final tweet = tweets[index];
-                  return ListTile(
-                    title: Text(tweet.text),
-                    subtitle: Text('Likes: ${tweet.favorites}'),
-                    trailing: IconButton(
-                      icon: Icon(Icons.thumb_up),
-                      onPressed: () => _likeTweet(tweet),
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: TextField(
+                      controller: _tweetController,
+                      decoration:
+                          InputDecoration(labelText: 'What\'s happening?'),
                     ),
-                  );
-                },
+                  ),
+                  ElevatedButton(
+                    onPressed: _addTweet,
+                    child: Text('Tweet'),
+                  ),
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: tweets.length,
+                      itemBuilder: (context, index) {
+                        final tweet = tweets[index];
+                        return ListTile(
+                          title: Text(tweet.text),
+                          subtitle: Text('Likes: ${tweet.favorites}'),
+                          trailing: IconButton(
+                            icon: Icon(Icons.thumb_up),
+                            onPressed: () => _likeTweet(tweet),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
               ),
-            ),
-          ],
-        ),
       ),
       TrendingPage(),
       CurrencyConverterPage(),
       WorldClockPage(),
+      AuthorInfoPage(),
       ProfilePage()
     ];
 
@@ -153,6 +157,10 @@ class _HomePageState extends State<HomePage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.access_time),
             label: 'World Clock',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.info),
+            label: 'Info',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.account_circle),
