@@ -29,7 +29,7 @@ class _LoginPageState extends State<LoginPage> {
     for (int i = 0; i < input.length; i++) {
       int charCode = input.codeUnitAt(i);
       if (charCode >= 65 && charCode <= 90) {
-        charCode = (charCode - 65 + key) % 26 + 65; 
+        charCode = (charCode - 65 + key) % 26 + 65;
       } else if (charCode >= 97 && charCode <= 122) {
         charCode = (charCode - 97 + key) % 26 + 97;
       }
@@ -42,8 +42,7 @@ class _LoginPageState extends State<LoginPage> {
   void _login() async {
     if (_formKey.currentState?.validate() ?? false) {
       final username = _usernameController.text;
-      final password =
-          _encrypt(_passwordController.text, 16); 
+      final password = _encrypt(_passwordController.text, 16);
 
       final user = _userController.getUser(username);
 
@@ -75,7 +74,7 @@ class _LoginPageState extends State<LoginPage> {
         title: Text('Login'),
       ),
       body: Container(
-        color: Colors.white, 
+        color: Colors.white,
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
@@ -83,11 +82,12 @@ class _LoginPageState extends State<LoginPage> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Text('Welcome to Twitter',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.blue,
+              Text(
+                'Welcome to Twitter',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blue,
                 ),
               ),
               SizedBox(height: 20),
@@ -96,12 +96,12 @@ class _LoginPageState extends State<LoginPage> {
                 decoration: InputDecoration(
                   labelText: 'Username',
                   filled: true,
-                  fillColor: Colors.white, 
-                  border: OutlineInputBorder( 
+                  fillColor: Colors.white,
+                  border: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.blue),
                     borderRadius: BorderRadius.circular(5.0),
                   ),
-                  focusedBorder: OutlineInputBorder( 
+                  focusedBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.blue),
                     borderRadius: BorderRadius.circular(5.0),
                   ),
@@ -119,8 +119,8 @@ class _LoginPageState extends State<LoginPage> {
                 decoration: InputDecoration(
                   labelText: 'Password',
                   filled: true,
-                  fillColor: Colors.white, 
-                  border: OutlineInputBorder( 
+                  fillColor: Colors.white,
+                  border: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.blue),
                     borderRadius: BorderRadius.circular(5.0),
                   ),
@@ -140,7 +140,10 @@ class _LoginPageState extends State<LoginPage> {
               SizedBox(height: 20),
               ElevatedButton(
                 onPressed: _login,
-                child: Text('Login', style: TextStyle(color: Colors.white),),
+                child: Text(
+                  'Login',
+                  style: TextStyle(color: Colors.white),
+                ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,
                 ),
@@ -156,7 +159,7 @@ class _LoginPageState extends State<LoginPage> {
                 child: Text(
                   'Belum punya akun? Register',
                   style: TextStyle(
-                    color: Colors.blue, 
+                    color: Colors.blue,
                     decoration: TextDecoration.underline,
                   ),
                 ),

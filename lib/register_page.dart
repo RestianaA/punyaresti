@@ -27,9 +27,9 @@ class _RegisterPageState extends State<RegisterPage> {
     for (int i = 0; i < input.length; i++) {
       int charCode = input.codeUnitAt(i);
       if (charCode >= 65 && charCode <= 90) {
-        charCode = (charCode - 65 + key) % 26 + 65; 
+        charCode = (charCode - 65 + key) % 26 + 65;
       } else if (charCode >= 97 && charCode <= 122) {
-        charCode = (charCode - 97 + key) % 26 + 97; 
+        charCode = (charCode - 97 + key) % 26 + 97;
       }
       output.writeCharCode(charCode);
     }
@@ -40,9 +40,9 @@ class _RegisterPageState extends State<RegisterPage> {
   void _register() async {
     if (_formKey.currentState?.validate() ?? false) {
       final username = _usernameController.text;
-      final password = _encrypt(_passwordController.text, 16); 
+      final password = _encrypt(_passwordController.text, 16);
 
-      if (username.isNotEmpty && password.isNotEmpty) {
+      if (_userController.getUser(username) == null) {  // Check if user already exists
         final user = User(username: username, password: password);
         await _userController.addUser(user);
 
@@ -52,7 +52,7 @@ class _RegisterPageState extends State<RegisterPage> {
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Please enter both username and password')),
+          SnackBar(content: Text('Username already exists')),
         );
       }
     } else {
@@ -69,7 +69,7 @@ class _RegisterPageState extends State<RegisterPage> {
         title: Text('Register'),
       ),
       body: Container(
-        color: Colors.white, 
+        color: Colors.white,
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
@@ -77,11 +77,12 @@ class _RegisterPageState extends State<RegisterPage> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Text('Sign Up Here',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.blue,
+              Text(
+                'Sign Up Here',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blue,
                 ),
               ),
               SizedBox(height: 20),
@@ -90,12 +91,12 @@ class _RegisterPageState extends State<RegisterPage> {
                 decoration: InputDecoration(
                   labelText: 'Username',
                   filled: true,
-                  fillColor: Colors.white, 
-                  border: OutlineInputBorder( 
+                  fillColor: Colors.white,
+                  border: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.blue),
                     borderRadius: BorderRadius.circular(5.0),
                   ),
-                  focusedBorder: OutlineInputBorder( 
+                  focusedBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.blue),
                     borderRadius: BorderRadius.circular(5.0),
                   ),
@@ -113,8 +114,8 @@ class _RegisterPageState extends State<RegisterPage> {
                 decoration: InputDecoration(
                   labelText: 'Password',
                   filled: true,
-                  fillColor: Colors.white, 
-                  border: OutlineInputBorder( 
+                  fillColor: Colors.white,
+                  border: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.blue),
                     borderRadius: BorderRadius.circular(5.0),
                   ),
@@ -134,7 +135,10 @@ class _RegisterPageState extends State<RegisterPage> {
               SizedBox(height: 20),
               ElevatedButton(
                 onPressed: _register,
-                child: Text('Register', style: TextStyle(color: Colors.white),),
+                child: Text(
+                  'Register',
+                  style: TextStyle(color: Colors.white),
+                ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,
                 ),
