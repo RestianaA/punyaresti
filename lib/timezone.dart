@@ -4,12 +4,10 @@ import 'package:intl/intl.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
 
-
 class WorldClockPage extends StatefulWidget {
   @override
   _WorldClockPageState createState() => _WorldClockPageState();
 }
-
 
 class _WorldClockPageState extends State<WorldClockPage> {
   late Timer _timer;
@@ -17,7 +15,6 @@ class _WorldClockPageState extends State<WorldClockPage> {
   late DateTime _makassarTime;
   late DateTime _jayapuraTime;
   late DateTime _londonTime;
-
 
   @override
   void initState() {
@@ -31,21 +28,18 @@ class _WorldClockPageState extends State<WorldClockPage> {
     });
   }
 
-
   @override
   void dispose() {
     _timer.cancel();
     super.dispose();
   }
 
-
   void _fetchWorldTime() {
     _jakartaTime = tz.TZDateTime.now(tz.getLocation('Asia/Jakarta'));
-    _makassarTime = tz.TZDateTime.now(tz.getLocation('Asia/Makassar')); // WITA
-    _jayapuraTime = tz.TZDateTime.now(tz.getLocation('Asia/Jayapura')); // WIT
+    _makassarTime = tz.TZDateTime.now(tz.getLocation('Asia/Makassar')); 
+    _jayapuraTime = tz.TZDateTime.now(tz.getLocation('Asia/Jayapura')); 
     _londonTime = tz.TZDateTime.now(tz.getLocation('Europe/London'));
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -68,28 +62,35 @@ class _WorldClockPageState extends State<WorldClockPage> {
     );
   }
 
-
   Widget _buildClockCard(String location, DateTime time) {
-    String formattedTime = DateFormat.Hm().format(time); // Format waktu tanpa detik
+    String formattedTime = DateFormat.Hm().format(time); 
     return Card(
       elevation: 4,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15.0), // Membuat sudut kartu lebih lebar
+        borderRadius: BorderRadius.circular(15.0), 
       ),
+      color: Colors.white, 
       child: Container(
-        width: double.infinity, // Mengatur lebar kartu menjadi lebar layar
+        width: double.infinity,
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               location,
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Colors.blue, 
+              ),
             ),
             SizedBox(height: 8),
             Text(
               formattedTime,
-              style: TextStyle(fontSize: 18),
+              style: TextStyle(
+                fontSize: 18,
+                color: Colors.black,
+              ),
             ),
           ],
         ),

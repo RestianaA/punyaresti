@@ -14,7 +14,7 @@ class _CurrencyConverterPageState extends State<CurrencyConverterPage> {
 
   final List<String> _allowedCurrencies = [
     'SGD', 'THB', 'JPY', 'KRW', 'USD', 'AUD', 'EUR'
-  ]; // Daftar mata uang yang diizinkan
+  ]; 
 
   @override
   void initState() {
@@ -52,9 +52,14 @@ class _CurrencyConverterPageState extends State<CurrencyConverterPage> {
           : Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             DropdownButtonFormField<String>(
               value: _selectedCurrency,
+              decoration: InputDecoration(
+                labelText: 'Select Currency',
+                border: OutlineInputBorder(),
+              ),
               items: _allowedCurrencies.map((currency) {
                 return DropdownMenuItem<String>(
                   value: currency,
@@ -68,8 +73,12 @@ class _CurrencyConverterPageState extends State<CurrencyConverterPage> {
                 });
               },
             ),
+            SizedBox(height: 16),
             TextField(
-              decoration: InputDecoration(labelText: 'Amount'),
+              decoration: InputDecoration(
+                labelText: 'Amount',
+                border: OutlineInputBorder(),
+              ),
               keyboardType: TextInputType.number,
               onChanged: (value) {
                 setState(() {
@@ -78,7 +87,22 @@ class _CurrencyConverterPageState extends State<CurrencyConverterPage> {
               },
             ),
             SizedBox(height: 20),
-            Text('Converted Amount: ${_convertCurrency(_amount, 'IDR')} IDR'),
+            Text(
+              'Converted Amount:',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 10),
+            Text(
+              '${_convertCurrency(_amount, 'IDR').toStringAsFixed(2)} IDR',
+              style: TextStyle(
+                fontSize: 24,
+                color: Colors.blue,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ],
         ),
       ),

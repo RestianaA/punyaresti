@@ -58,11 +58,6 @@ class _TrendingPageState extends State<TrendingPage> {
                 return ListTile(
                   title: Text(trend.name),
                   subtitle: Text('Tweets: ${trend.tweetCount}'),
-                  onTap: () {
-                    // Handle tap on trend
-                    // For example, open the URL in a webview or browser
-                    // launch(trend.url);
-                  },
                 );
               },
             );

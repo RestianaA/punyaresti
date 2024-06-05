@@ -9,6 +9,24 @@ import 'currency.dart';
 import 'trending.dart';
 import 'info.dart';
 
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Twitter Clone',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        scaffoldBackgroundColor: Colors.white,
+      ),
+      home: HomePage(),
+    );
+  }
+}
+
 class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
@@ -29,7 +47,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _loadUsername() async {
-    // Ensure the method is async and returns a Future
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       _username = prefs.getString('username');
@@ -68,9 +85,10 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     if (_username == null) {
-      // Show a loading indicator while waiting for the username
       return Scaffold(
-        appBar: AppBar(title: Text('Home')),
+        appBar: AppBar(
+          title: Text('Home'),
+        ),
         body: Center(child: CircularProgressIndicator()),
       );
     }
@@ -89,9 +107,7 @@ class _HomePageState extends State<HomePage> {
       tweets.sort((a, b) => b.timestamp.compareTo(a.timestamp));
     }
 
-    // Pages for bottom navigation
     final List<Widget> _pages = [
-      // HomePage
       Scaffold(
         appBar: AppBar(
           title: Text('Home'),
@@ -104,25 +120,34 @@ class _HomePageState extends State<HomePage> {
                     padding: const EdgeInsets.all(16.0),
                     child: TextField(
                       controller: _tweetController,
-                      decoration:
-                          InputDecoration(labelText: 'What\'s happening?'),
+                      decoration: InputDecoration(
+                        labelText: 'What\'s happening?',
+                        border: OutlineInputBorder(),
+                      ),
                     ),
                   ),
                   ElevatedButton(
-                    onPressed: _addTweet,
-                    child: Text('Tweet'),
+                  onPressed: _addTweet,
+                  child: Text('Tweet', style: TextStyle(color: Colors.white),),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue
                   ),
+                ),
                   Expanded(
                     child: ListView.builder(
                       itemCount: tweets.length,
                       itemBuilder: (context, index) {
                         final tweet = tweets[index];
-                        return ListTile(
-                          title: Text(tweet.text),
-                          subtitle: Text('Likes: ${tweet.favorites}'),
-                          trailing: IconButton(
-                            icon: Icon(Icons.thumb_up),
-                            onPressed: () => _likeTweet(tweet),
+                        return Card(
+                          margin: EdgeInsets.symmetric(
+                              vertical: 8.0, horizontal: 16.0),
+                          child: ListTile(
+                            title: Text(tweet.text),
+                            subtitle: Text('Likes: ${tweet.favorites}'),
+                            trailing: IconButton(
+                              icon: Icon(Icons.thumb_up),
+                              onPressed: () => _likeTweet(tweet),
+                            ),
                           ),
                         );
                       },
@@ -139,7 +164,15 @@ class _HomePageState extends State<HomePage> {
     ];
 
     return Scaffold(
-      body: _pages[_selectedIndex],
+      body: PageView(
+        controller: _pageController,
+        onPageChanged: (index) {
+          setState(() {
+            _selectedIndex = index;
+          });
+        },
+        children: _pages,
+      ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(

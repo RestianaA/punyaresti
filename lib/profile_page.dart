@@ -4,6 +4,8 @@ import 'package:hive/hive.dart';
 import 'models/user_model.dart';
 import 'user_controller.dart';
 import 'login_page.dart';
+import 'followers_page.dart';
+import 'following_page.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -12,7 +14,7 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   late UserController _userController;
-  String? _username;  // Make _username nullable
+  String? _username;
   final _followController = TextEditingController();
 
   @override
@@ -22,7 +24,7 @@ class _ProfilePageState extends State<ProfilePage> {
     _loadUsername();
   }
 
-  void _loadUsername() async {
+  Future<void> _loadUsername() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       _username = prefs.getString('username');
@@ -46,9 +48,15 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
+  void _unfollowUser(String userToUnfollow) async {
+    if (_username != null) {
+      await _userController.unfollowUser(_username!, userToUnfollow);
+      setState(() {});
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    // Handle the case where _username is null
     if (_username == null) {
       return Scaffold(
         appBar: AppBar(
@@ -72,37 +80,127 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
       body: user == null
           ? Center(child: CircularProgressIndicator())
-          : Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Text('Username: ${user.username}'),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: TextField(
-              controller: _followController,
-              decoration: InputDecoration(labelText: 'Follow Username'),
+          : SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  children: [
+                    CircleAvatar(
+                      radius: 50,
+                      backgroundImage: AssetImage('../assets/acc.jpg'),
+                    ),
+                    SizedBox(height: 16),
+                    Text(
+                      user.username,
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.blue,
+                      ),
+                    ),
+                    SizedBox(height: 16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => FollowersPage(user: user)),
+                            );
+                          },
+                          child: Column(
+                            children: [
+                              Text(
+                                'Followers',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.blue,
+                                ),
+                              ),
+                              Text(
+                                user.followers.length.toString(),
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => FollowingPage(user: user)),
+                            );
+                          },
+                          child: Column(
+                            children: [
+                              Text(
+                                'Following',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.blue,
+                                ),
+                              ),
+                              Text(
+                                user.following.length.toString(),
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 20),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'Tweets',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.blue,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    user.tweets.isEmpty
+                        ? Text('No tweets yet.')
+                        : ListView.builder(
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            itemCount: user.tweets.length,
+                            itemBuilder: (context, index) {
+                              final tweet = user.tweets[index];
+                              return Card(
+                                elevation: 2,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: ListTile(
+                                  title: Text(
+                                    tweet.text,
+                                    style: TextStyle(color: Colors.black),
+                                  ),
+                                  subtitle: Text(
+                                    'Likes: ${tweet.favorites}',
+                                    style: TextStyle(color: Colors.grey),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                  ],
+                ),
+              ),
             ),
-          ),
-          ElevatedButton(
-            onPressed: _followUser,
-            child: Text('Follow'),
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: user.tweets.length,
-              itemBuilder: (context, index) {
-                final tweet = user.tweets[index];
-                return ListTile(
-                  title: Text(tweet.text),
-                  subtitle: Text('Likes: ${tweet.favorites}'),
-                );
-              },
-            ),
-          ),
-        ],
-      ),
     );
   }
 }
